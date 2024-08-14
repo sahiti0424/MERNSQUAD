@@ -7,10 +7,10 @@ const categories = [
   { name: 'FootBall', image: 'https://images.pexels.com/photos/46798/the-ball-stadion-football-the-pitch-46798.jpeg?auto=compress&cs=tinysrgb&w=600' },
   { name: 'Badminton', image: 'https://images.pexels.com/photos/2202685/pexels-photo-2202685.jpeg?auto=compress&cs=tinysrgb&w=600' },
   { name: 'Hockey', image: 'https://e0.pxfuel.com/wallpapers/263/984/desktop-wallpaper-field-hockey-ice-hockey.jpg?auto=compress&cs=tinysrgb&w=600' },
-  { name: 'Kabbadi', image: 'https://globalsportmatters.com/wp-content/uploads/2018/09/Kabaddi.jpg' },
-  { name: 'Racing', image: 'https://images.pexels.com/photos/12795/pexels-photo-12795.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
-  { name: 'Skating', image: 'https://5.imimg.com/data5/ANDROID/Default/2022/11/AM/RM/UZ/142375023/product-jpeg.jpg' },
-  { name: 'Accessories', image: 'https://www.thesportsbank.net/wp-content/uploads/2021/02/AdobeStock_255447164.jpeg' },
+  // { name: 'Kabbadi', image: 'https://globalsportmatters.com/wp-content/uploads/2018/09/Kabaddi.jpg' },
+  // { name: 'Racing', image: 'https://images.pexels.com/photos/12795/pexels-photo-12795.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+  // { name: 'Skating', image: 'https://5.imimg.com/data5/ANDROID/Default/2022/11/AM/RM/UZ/142375023/product-jpeg.jpg' },
+  // { name: 'Accessories', image: 'https://www.thesportsbank.net/wp-content/uploads/2021/02/AdobeStock_255447164.jpeg' },
 ];
 
 const CategoryCard = ({ category }) => {

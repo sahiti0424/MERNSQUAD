@@ -1,17 +1,79 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdSportsCricket } from "react-icons/md";
 import { IoIosFootball } from "react-icons/io";
 import { GiHockey } from "react-icons/gi";
 import { GiShuttlecock } from "react-icons/gi";
-import { GiRollerSkate } from "react-icons/gi";
 import { GiF1Car } from "react-icons/gi";
-
-
+import { GiRollerSkate } from "react-icons/gi";
+import axios from "axios";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCart } from "../redux/cartSlice";
 const Header = () => {
+  const [profile, setProfile] = useState(null);
+  const [showAdminPopup, setShowAdminPopup] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const totalItems = useSelector(state => state.cart.totalItems);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setProfile(null); 
+    } else {
+      axios.get("http://localhost:5000/user/userprofile", { withCredentials: true })
+        .then((res) => {
+          if (res.data.status === false && res.data.message === "no token") {
+            setProfile(null);
+          } else {
+            setProfile(res.data); 
+            if (res.data.isAdmin) {
+              setShowAdminPopup(true);
+            }
+            // Fetch cart data when profile is set
+            dispatch(fetchCart(res.data._id));
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setProfile(null);
+        });
+    }
+  }, [dispatch]);
 
+  const handleAdminPopup = () => {
+    setShowAdminPopup(false);
+    navigate('/sell');
+  };
+  const logout = () => {
+    axios.get("http://localhost:5000/user/logout", { withCredentials: true })
+      .then(() => {
+        localStorage.removeItem('token');
+        setProfile(null);
+        navigate('/');
+      })
+      .catch((err) => {
+        console.log('Error during logout:', err);
+      });
+  };
   return (
+    <>
+    {showAdminPopup && (
+      <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4">It looks like you are an Admin!</h2>
+          <p className="text-gray-600 mb-6">Would you like to go to the admin panel?</p>
+          <Button variant="contained" color="primary" onClick={handleAdminPopup}>
+            Yes
+          </Button>
+          <Button variant="contained" color="error" className="ml-6" onClick={() => setShowAdminPopup(false)}>
+            No
+          </Button>
+        </div>
+      </div>
+    )}
     <header className='shadow-md bg-white font-[sans-serif] tracking-wide z-50 relative'>
     <section
       className='flex items-center flex-wrap lg:justify-center gap-4 py-3 sm:px-10 px-4 border-gray-200 border-b min-h-[75px]'>
@@ -25,16 +87,24 @@ const Header = () => {
         </svg>
         <input type='text' placeholder='Search...' className="outline-none bg-transparent w-full text-sm" />
       </div>
+
   
       <a href="javascript:void(0)" className="shrink-0"><img src="https://readymadeui.com/readymadeui.svg" alt="logo"
           className='md:w-[170px] w-36' />
       </a>
   {/*change here for signin/signup ,signout after backend */}
+
       <div className="lg:absolute lg:right-10 flex items-center ml-auto space-x-8">
         <span className="relative">
-        <Link to="/signup">
-          <button className="">sign Up</button>
-          </Link>
+        {profile ? (
+    <span className='text-sm text-gray-600'>Hello, {profile.username}<span className='px-8'><Button onClick={logout}   variant='contained' color='error' size='small'>logout</Button></span></span>
+  ) : ( 
+    <Link to='/login'>
+      <button className='px-4 py-2 text-sm rounded font-semibold text-[#333] border-2 border-[#333] bg-transparent'>
+        Sign In
+      </button>
+    </Link>
+  )}
         </span>
 <div
   class="max-w-32 bg-transparent items-center justify-center flex border-2 border-sky-500 shadow-lg hover:bg-sky-500 text-sky-500 hover:text-white duration-300 cursor-pointer active:scale-[0.98]"
@@ -49,7 +119,7 @@ const Header = () => {
               d="M164.96 300.004h.024c.02 0 .04-.004.059-.004H437a15.003 15.003 0 0 0 14.422-10.879l60-210a15.003 15.003 0 0 0-2.445-13.152A15.006 15.006 0 0 0 497 60H130.367l-10.722-48.254A15.003 15.003 0 0 0 105 0H15C6.715 0 0 6.715 0 15s6.715 15 15 15h77.969c1.898 8.55 51.312 230.918 54.156 243.71C131.184 280.64 120 296.536 120 315c0 24.812 20.188 45 45 45h272c8.285 0 15-6.715 15-15s-6.715-15-15-15H165c-8.27 0-15-6.73-15-15 0-8.258 6.707-14.977 14.96-14.996zM477.114 90l-51.43 180H177.032l-40-180zM150 405c0 24.813 20.188 45 45 45s45-20.188 45-45-20.188-45-45-45-45 20.188-45 45zm45-15c8.27 0 15 6.73 15 15s-6.73 15-15 15-15-6.73-15-15 6.73-15 15-15zm167 15c0 24.813 20.188 45 45 45s45-20.188 45-45-20.188-45-45-45-45 20.188-45 45zm45-15c8.27 0 15 6.73 15 15s-6.73 15-15 15-15-6.73-15-15 6.73-15 15-15zm0 0"
               data-original="#000000"></path>
           </svg>
-          <span className="absolute left-auto -ml-1 top-0 rounded-full bg-black px-1 py-0 text-xs text-white">4</span>
+          <span className="absolute left-auto -ml-1 top-0 rounded-full bg-black px-1 py-0 text-xs text-white">{totalItems}</span>
         </span>
         <div className="inline-block cursor-pointer border-gray-300">
           <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24"
@@ -139,21 +209,21 @@ const Header = () => {
                 </p>
                 </Link>
               </li>
-              <li className='border-b py-3'>
+              {/* <li className='border-b py-3'>
                 <a href='javascript:void(0)'
                   className='hover:text-[#007bff] hover:fill-[#007bff] text-gray-600 font-semibold text-[15px] block'>
                   <GiF1Car className="mr-4 inline-block size-8"/>
                   Racing
                 </a>
-              </li>
-              <li className='border-b py-3'>
+              </li> */}
+              {/* <li className='border-b py-3'>
                 <a href='javascript:void(0)'
                   className='hover:text-[#007bff] hover:fill-[#007bff] text-gray-600 font-semibold text-[15px] block'>
                   <GiRollerSkate className="mr-4 inline-block size-6"/>
                   Skating
                 </a>
-              </li>
-              <li className='border-b py-3'>
+              </li> */}
+              {/* <li className='border-b py-3'>
                 <a href='javascript:void(0)'
                   className='hover:text-[#007bff] hover:fill-[#007bff] text-gray-600 font-semibold text-[15px] block'>
                   <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" className="mr-4 inline-block"
@@ -164,7 +234,7 @@ const Header = () => {
                   </svg>
                   Accessories
                 </a>
-              </li>
+              </li> */}
             </ul>
           </li>
           <li className='max-lg:border-b max-lg:px-3 max-lg:py-3'><a href='javascript:void(0)'
@@ -195,6 +265,7 @@ const Header = () => {
       </div>
     </div>
   </header>
+  </>
   );
 };
 

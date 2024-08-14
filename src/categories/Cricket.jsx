@@ -1,22 +1,56 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+
 import { Link } from 'react-router-dom';
+import { FaCartPlus } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, fetchCart } from '../redux/cartSlice';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Cricket = () => {
   const [products, setProducts] = useState([]);
-
+  const [profile, setProfile] = useState(null);
+  const dispatch = useDispatch();
+  const cart = useSelector(state => state.cart);
+  const [user, setUser] = useState(null);
   useEffect(() => {
-    axios.get('http://localhost:5000/cricket')
+    // Fetch products
+    axios.get("http://localhost:5000/products/cricket")
       .then(response => {
         setProducts(response.data);
       })
       .catch(error => {
         console.error('There was an error fetching the products!', error);
       });
-  }, []);
+
+    // Fetch user profile
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.get("http://localhost:5000/user/userprofile", { withCredentials: true })
+        .then((res) => {
+          if (res.data.status !== false) {
+            setProfile(res.data);
+            dispatch(fetchCart(res.data._id));
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [dispatch]);
+
+  const handleAddToCart = (productId) => {
+    if (profile) {
+      dispatch(addToCart({ userId: profile._id, productId, quantity: 1 }));
+      toast.success("added to cart");
+    } else {
+      alert('Please log in to add items to your cart');
+    }
+  };
 
   return (
     <div className="font-[sans-serif] py-4 mx-auto lg:max-w-7xl sm:max-w-full">
+      <Toaster/>
       <h2 className="text-4xl font-extrabold text-gray-800 mb-12">Cricket Store</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
@@ -26,12 +60,9 @@ const Cricket = () => {
           >
             <div
               className="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-3 right-3"
+              onClick={() => handleAddToCart(product._id)}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16px" className="fill-gray-800 inline-block" viewBox="0 0 64 64">
-                <path
-                  d="M45.5 4A18.53 18.53 0 0 0 32 9.86 18.5 18.5 0 0 0 0 22.5C0 40.92 29.71 59 31 59.71a2 2 0 0 0 2.06 0C34.29 59 64 40.92 64 22.5A18.52 18.52 0 0 0 45.5 4ZM32 55.64C26.83 52.34 4 36.92 4 22.5a14.5 14.5 0 0 1 26.36-8.33 2 2 0 0 0 3.27 0A14.5 14.5 0 0 1 60 22.5c0 14.41-22.83 29.83-28 33.14Z"
-                />
-              </svg>
+              <FaCartPlus />
             </div>
           
             <div className="w-45 h-[260px] p-4 overflow-hidden mx-auto aspect-w-16 aspect-h-8">
@@ -43,8 +74,8 @@ const Cricket = () => {
               <h4 className="text-lg text-gray-800 font-bold mt-2">₹{product.price}</h4>
               <p className="text-gray-600 text-sm mt-2">{product.description}</p>
               <Link to={`/cricket/${product.id}`}>
-              <button className='border-purple-400 text-purple-500'>Buy now</button>
-              </Link>
+  <button    className='border-purple-400 text-purple-500'>Buy now</button>
+</Link>
               <div className="flex space-x-2 mt-4">
                 {[...Array(5)].map((_, index) => (
                   <svg

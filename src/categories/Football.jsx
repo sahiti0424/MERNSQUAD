@@ -6,7 +6,7 @@ const Football = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/football')
+    axios.get('/products/football')
       .then(response => {
         setProducts(response.data);
       })

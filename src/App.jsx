@@ -10,6 +10,13 @@ import BadmintonDetails from './Views/BadmintonDetails';
 import SignUp from './Auth/SignUp';
 import Login from './Auth/Login';
 import Seller from './Auth/Seller';
+import OrderForm from './components/Checkout';
+import Cart from './components/Cart';
+import ContactForm from './components/ContactForm';
+import ForgotPassword from './Auth/ForgotPassword';
+import ResetPassword from './Auth/ResetPassword';
+import Hockey from './categories/Hockey';
+import HockeyDetails from './Views/HockeyDetails';
 
 function App() {
   return (
@@ -26,7 +33,10 @@ function App() {
         <Route path="/football/:id" element={<FootballDetails/>} />
         <Route path="/badminton" element={<Badminton />} />
         <Route path="/badminton/:id" element={<BadmintonDetails />} />
-
+        <Route path="/hockey" element={<Hockey />} />
+        <Route path="/hockey/:id" element={<HockeyDetails />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/reset-password/:token' element={<ResetPassword />} />
       </Routes>
     </>
   );

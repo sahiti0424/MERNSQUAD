@@ -6,7 +6,7 @@ const TrendingProducts = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/trending-products')
+    axios.get('/products/trending-products')
       .then(response => {
         setProducts(response.data);
       })

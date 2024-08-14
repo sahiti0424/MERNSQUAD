@@ -3,13 +3,12 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { FaCartPlus } from 'react-icons/fa';
 import SellerDetails from './SellerDetails';
-
-const BadmintonDetails = () => {
+const HockeyDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    axios.get(`/products/badminton/${id}`)
+    axios.get(`/products/hockey/${id}`)
       .then(response => {
         setProduct(response.data);
       })
@@ -24,7 +23,7 @@ const BadmintonDetails = () => {
       <div className="grid items-start grid-cols-1 lg:grid-cols-5 gap-8">
         <div className="lg:col-span-3 text-center">
           <div className="lg:h-[450px] p-4 relative before:absolute before:inset-0 before:opacity-20 before:rounded">
-            <img src={product.image} alt={product.name} className="lg:w-11/12 w-full h-full rounded object-contain object-top" />
+            <img src={product.image} alt={product.name} className="lg:w-11/12 w-full h-full rounded object-contain object-top " />
           </div>
         </div>
 
@@ -38,13 +37,13 @@ const BadmintonDetails = () => {
         </div>
       </div>
       <div>
-      <h1 className='font-bold font-serif text-3xl ml-15 text-center ml-64 '>Seller Details</h1>
+        <h1 className='font-bold font-serif text-3xl ml-15 text-center ml-64 '>Seller Details</h1>
        
-       <SellerDetails />
-       
+<SellerDetails />
+
       </div>
     </div>
   );
 };
 
-export default BadmintonDetails;
+export default HockeyDetails;

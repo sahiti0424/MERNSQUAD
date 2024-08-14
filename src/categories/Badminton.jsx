@@ -6,7 +6,7 @@ const Badminton = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/badminton')
+    axios.get('/products/badminton')
       .then(response => {
         setProducts(response.data);
       })
